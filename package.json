@@ -14,29 +14,29 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.AddProjectReference",
-        "title": "Add Project Reference"
+        "command": "context-menu.AddProjectReference",
+        "title": "Project Reference"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "submenu": "myCsprojSubmenu",
+          "submenu": "projectReferenceMenu",
           "when": "resourceExtname == .csproj",
           "group": "navigation"
         }
       ],
-      "myCsprojSubmenu": [
+      "projectReferenceMenu": [
         {
-          "command": "extension.AddProjectReference",
+          "command": "context-menu.AddProjectReference",
           "group": "navigation"
         }
       ]
     },
     "submenus": [
       {
-        "id": "myCsprojSubmenu",
-        "label": "Custom Actions"
+        "id": "projectReferenceMenu",
+        "label": "Add"
       }
     ]
   },
