@@ -21,6 +21,14 @@ async function findCsprojFiles(dir: string): Promise<string[]> {
     return csprojFiles.flat();
 }
 
+function addProjectReference(command: string, cwd: string): Promise<void> {
+    return execAsync(command, { cwd }).then(({ stderr }) => {
+        if (stderr) {
+            return Promise.reject(new Error(stderr));
+        }
+    });
+}
+
 async function AddProjectReference(uri: vscode.Uri) {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders) {
@@ -49,28 +57,22 @@ async function AddProjectReference(uri: vscode.Uri) {
 
     if (selectedProjects && selectedProjects.length > 0) {
         const cwd = path.dirname(currentCsprojPath);
-
-        for (const selectedProject of selectedProjects) {
+        
+        selectedProjects.reduce((promiseChain, selectedProject) => {
             const relativeProjectPath = path.join(solutionDir, selectedProject);
             const command = `dotnet add "${currentCsprojPath}" reference "${relativeProjectPath}"`;
 
-            try {
-                const { stdout, stderr } = await execAsync(command, { cwd });
-                if (stderr) {
-                    vscode.window.showErrorMessage(`Error adding reference: ${stderr}`);
-                } else {
+            return promiseChain
+                .then(() => addProjectReference(command, cwd))
+                .then(() => {
                     vscode.window.showInformationMessage(
                         `Reference added successfully from ${relativeProjectPath} to ${currentCsprojPath}`
                     );
-                }
-            } catch (error) {
-                if (error instanceof Error) {
+                })
+                .catch(error => {
                     vscode.window.showErrorMessage(`Error adding reference: ${error.message}`);
-                } else {
-                    vscode.window.showErrorMessage("An unknown error occurred.");
-                }
-            }
-        }
+                });
+        }, Promise.resolve());
     }
 }
 
