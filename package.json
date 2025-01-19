@@ -16,26 +16,34 @@
       {
         "command": "context-menu.AddProjectReference",
         "title": "Project Reference"
+      },
+      {
+        "command": "context-menu.AddDllReference",
+        "title": "Dll Reference"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "submenu": "projectReferenceMenu",
+          "submenu": "addReferenceMenu",
           "when": "resourceExtname == .csproj",
           "group": "navigation"
         }
       ],
-      "projectReferenceMenu": [
+      "addReferenceMenu": [
         {
           "command": "context-menu.AddProjectReference",
+          "group": "navigation"
+        },
+        {
+          "command": "context-menu.AddDllReference",
           "group": "navigation"
         }
       ]
     },
     "submenus": [
       {
-        "id": "projectReferenceMenu",
+        "id": "addReferenceMenu",
         "label": "Add"
       }
     ]
